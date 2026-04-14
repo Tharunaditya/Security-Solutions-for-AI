@@ -112,6 +112,8 @@ class RequestAnomalyDetector:
         """
         now = event.timestamp
         key = event.api_key
+        # Masked key used in log messages to avoid logging raw API keys
+        masked = key[:4] + "****" if len(key) > 4 else "****"
 
         # Update stats
         self._per_key_request_counts[key].add(1, now)
@@ -125,12 +127,12 @@ class RequestAnomalyDetector:
         # Check 1: Per-key request rate
         rpm = self._per_key_request_counts[key].count(now)
         if rpm > self.max_rpm:
-            alerts.append(f"[{key}] High request rate: {rpm}/min > {self.max_rpm}/min")
+            alerts.append(f"[key={masked}] High request rate: {rpm}/min > {self.max_rpm}/min")
 
         # Check 2: Per-key token rate
         tpm = self._per_key_token_counts[key].sum()
         if tpm > self.max_tpm:
-            alerts.append(f"[{key}] High token rate: {tpm:,.0f}/min > {self.max_tpm:,.0f}/min")
+            alerts.append(f"[key={masked}] High token rate: {tpm:,.0f}/min > {self.max_tpm:,.0f}/min")
 
         # Check 3: Unusually large single request
         mean_tokens = self._per_key_token_counts[key].mean()
@@ -138,7 +140,7 @@ class RequestAnomalyDetector:
         if std_tokens > 0:
             z = (event.n_input_tokens - mean_tokens) / std_tokens
             if z > self.spike_z and event.n_input_tokens > 1000:
-                alerts.append(f"[{key}] Anomalously large request: {event.n_input_tokens} tokens "
+                alerts.append(f"[key={masked}] Anomalously large request: {event.n_input_tokens} tokens "
                                f"(z={z:.1f})")
 
         # Check 4: Boundary probing (model extraction signal)
@@ -147,11 +149,11 @@ class RequestAnomalyDetector:
             confs = [v for _, v in conf_stats._events]
             boundary_fraction = sum(1 for c in confs if abs(c - 0.5) < 0.15) / len(confs)
             if boundary_fraction > self.boundary_threshold:
-                alerts.append(f"[{key}] Possible model extraction: "
+                alerts.append(f"[key={masked}] Possible model extraction: "
                                f"{boundary_fraction:.0%} boundary queries")
 
         for alert in alerts:
-            self._alerts.append({"time": now, "alert": alert, "key": key})
+            self._alerts.append({"time": now, "alert": alert, "key": masked})
 
         return alerts
 

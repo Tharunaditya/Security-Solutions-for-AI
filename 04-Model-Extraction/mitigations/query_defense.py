@@ -172,7 +172,8 @@ class ProtectedInferenceAPI:
         # Check for extraction patterns
         suspicious, reason = detector.is_suspicious()
         if suspicious:
-            print(f"  [ALERT] Suspicious activity from {api_key}: {reason}")
+            masked_key = api_key[:4] + "****" if len(api_key) > 4 else "****"
+            print(f"  [ALERT] Suspicious activity from key={masked_key}: {reason}")
             self._blocked_keys.add(api_key)
             # Return degraded output for this request before blocking
             label = random.randint(0, 1)
