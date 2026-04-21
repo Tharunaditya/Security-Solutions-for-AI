@@ -21,11 +21,37 @@ A comprehensive reference repository covering threats, attack scenarios, concept
 
 ---
 
+## 🛡️ Threat Modeling for AI Applications
+
+A complete, evergreen guide to **structured threat modeling** for AI/ML systems — from first principles to hands-on walkthroughs for five distinct AI architectures.
+
+| # | Scenario | Key Risks |
+|---|----------|-----------|
+| [Fundamentals](./docs/threat-modeling/00-fundamentals.md) | DFDs, STRIDE, trust boundaries, attacker profiles | All AI systems |
+| [01](./docs/threat-modeling/01-rag-chatbot.md) | **RAG Chatbot** over internal documents | Prompt injection, retrieval poisoning, data exfiltration |
+| [02](./docs/threat-modeling/02-code-assistant.md) | **Code Assistant / Copilot-like Tool** | Malicious code suggestion, secret leakage, supply chain |
+| [03](./docs/threat-modeling/03-document-ocr-pipeline.md) | **Document OCR & Classification Pipeline** | Adversarial documents, PII leakage, model inversion |
+| [04](./docs/threat-modeling/04-ai-saas-platform.md) | **Multi-Tenant AI SaaS Platform** | Tenant isolation, cross-tenant inference, model theft |
+| [05](./docs/threat-modeling/05-llm-customer-service-agent.md) | **LLM Customer-Service Agent with Tool Access** | Tool misuse, indirect prompt injection, privilege escalation |
+
+→ **[Open the Threat Modeling Guide](./docs/threat-modeling/README.md)**
+
+---
+
 ## 🏗️ Repository Structure
 
 ```
 Security-Solutions-for-AI/
 ├── README.md                        ← You are here
+├── docs/
+│   └── threat-modeling/             ← Threat modeling guide & walkthroughs
+│       ├── README.md                ← Index & navigation
+│       ├── 00-fundamentals.md       ← DFD, STRIDE, trust boundaries, process
+│       ├── 01-rag-chatbot.md        ← RAG chatbot threat model
+│       ├── 02-code-assistant.md     ← Code assistant threat model
+│       ├── 03-document-ocr-pipeline.md ← OCR pipeline threat model
+│       ├── 04-ai-saas-platform.md   ← Multi-tenant SaaS threat model
+│       └── 05-llm-customer-service-agent.md ← Agent with tools threat model
 ├── 01-Prompt-Injection/
 │   ├── README.md                    ← Concept, explanation, scenarios
 │   ├── examples/                    ← Attack demos (for research/education)
